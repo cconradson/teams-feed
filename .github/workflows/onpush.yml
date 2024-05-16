@@ -1,0 +1,17 @@
+name: test-flow
+
+on: [push]
+
+jobs:
+  sendhook:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+    - name: Run python script
+      run: |
+        pip install requests
+        python .github/workflows/scripts/onpush.py "${{secrets.WEBHOOK_URL}}" "${{toJSON(github.repository)}}" "${{github.event.pusher.name}}" "${{join(github.event.commits.*.message, '~~')}}" 
